@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:unn_mobile/core/viewmodels/main_page_view_model.dart';
@@ -18,17 +17,13 @@ class MainPageNavigationBar extends StatelessWidget {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 6.0,
-              sigmaY: 6.0,
-            ),
-            child: Container(
-              width: double.maxFinite,
-              height: 60,
-              color: Colors.transparent,
-            ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: 0.3,
+            color: Colors.grey.withOpacity(0.5),
           ),
         ),
         NavigationBar(

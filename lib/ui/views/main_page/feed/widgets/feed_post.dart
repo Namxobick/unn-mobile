@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
 import 'package:go_router/go_router.dart';
+import 'package:injector/injector.dart';
 import 'package:intl/intl.dart';
 import 'package:unn_mobile/core/misc/app_settings.dart';
 import 'package:unn_mobile/core/misc/custom_bb_tags.dart';
 import 'package:unn_mobile/core/models/rating_list.dart';
+import 'package:unn_mobile/core/services/interfaces/logger_service.dart';
+import 'package:unn_mobile/core/viewmodels/attached_file_view_model.dart';
 import 'package:unn_mobile/core/viewmodels/feed_post_view_model.dart';
 import 'package:unn_mobile/core/viewmodels/profile_view_model.dart';
 import 'package:unn_mobile/core/viewmodels/reaction_view_model.dart';
@@ -18,6 +21,9 @@ import 'package:unn_mobile/ui/views/main_page/feed/widgets/attached_file.dart';
 import 'package:unn_mobile/ui/views/main_page/main_page_routing.dart';
 import 'package:unn_mobile/ui/widgets/shimmer.dart';
 import 'package:unn_mobile/ui/widgets/shimmer_loading.dart';
+import 'package:share_plus/share_plus.dart';
+
+import 'dart:io';
 
 const idkWhatColor = Color(0xFF989EA9);
 
@@ -246,6 +252,42 @@ class _FeedPostState extends State<FeedPost> {
                           ),
                         ),
                       ),
+                      const SizedBox(width: 12),
+                      GestureDetector(
+                        onTap: () async {
+                          if (widget.showingComments) {
+                            return;
+                          }
+                          await sharePressed(
+                            context,
+                            model.postText,
+                            model.profileViewModel.fullname,
+                            model.postTime,
+                            model.attachedFileViewModels,
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ).copyWith(right: 8),
+                          decoration: BoxDecoration(
+                            color: idkWhatColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.share,
+                                color: idkWhatColor,
+                                size: 23,
+                              ),
+                              SizedBox(width: 6),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -257,6 +299,51 @@ class _FeedPostState extends State<FeedPost> {
       onModelReady: (p0) => p0.onError.subscribe(onPostRefreshError),
       onDispose: (p0) => p0.onError.unsubscribe(onPostRefreshError),
     );
+  }
+}
+
+Future<ShareResult> sharePressed(
+  BuildContext context,
+  String postText,
+  String authorName,
+  DateTime postTime,
+  List<AttachedFileViewModel> attachedFiles,
+) async {
+  final logger = Injector.appInstance.get<LoggerService>();
+
+  try {
+    final String formattedDate =
+        DateFormat('d MMMM yyyy, HH:mm', 'ru_RU').format(postTime);
+    final String text = '$authorName\n$formattedDate\n\n$postText';
+
+    final List<XFile> xFiles = [];
+
+    for (final fileViewModel in attachedFiles) {
+      final File? file = await fileViewModel.getFile();
+      if (file != null && file.existsSync()) {
+        xFiles.add(XFile(file.path));
+      }
+    }
+
+    if (!context.mounted) {
+      return ShareResult.unavailable;
+    }
+    final RenderBox box = context.findRenderObject() as RenderBox;
+    if (xFiles.isNotEmpty) {
+      return await Share.shareXFiles(
+        xFiles,
+        text: text,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+      );
+    } else {
+      return await Share.share(
+        text,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+      );
+    }
+  } catch (e, stackTrace) {
+    logger.logError('Ошибка при попытке поделиться постом: $e', stackTrace);
+    rethrow;
   }
 }
 
