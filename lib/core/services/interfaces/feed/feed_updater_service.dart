@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:unn_mobile/core/models/feed/blog_post_data.dart';
+import 'package:unn_mobile/core/models/feed/blog_post.dart';
 
 abstract interface class FeedUpdaterService with ChangeNotifier {
-  List<BlogPostData> get feedPosts;
+  List<BlogPost> get feedPosts;
 
   /// Номер последней загруженной страницы ленты.
   ///

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:unn_mobile/core/constants/regular_expressions.dart';
 import 'package:unn_mobile/core/constants/api_url_strings.dart';
 import 'package:unn_mobile/core/misc/api_helpers/api_helper.dart';
-import 'package:unn_mobile/core/services/interfaces/feed/getting_vote_key_signed.dart';
+import 'package:unn_mobile/core/services/interfaces/feed/legacy/getting_vote_key_signed.dart';
 import 'package:unn_mobile/core/services/interfaces/logger_service.dart';
 
 class _PathParts {

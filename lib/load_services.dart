@@ -15,7 +15,6 @@ import 'package:unn_mobile/core/services/implementations/feed/feed_file_download
 import 'package:unn_mobile/core/services/implementations/feed/feed_updater_service_impl.dart';
 import 'package:unn_mobile/core/services/implementations/firebase_logger.dart';
 import 'package:unn_mobile/core/services/implementations/feed/legacy/getting_blog_post_comments_impl.dart';
-import 'package:unn_mobile/core/services/implementations/feed/legacy/getting_blog_posts_impl.dart';
 import 'package:unn_mobile/core/services/implementations/getting_file_data_impl.dart';
 import 'package:unn_mobile/core/services/implementations/getting_grade_book_impl.dart';
 import 'package:unn_mobile/core/services/implementations/getting_profile_impl.dart';
@@ -43,15 +42,14 @@ import 'package:unn_mobile/core/services/interfaces/export_schedule_service.dart
 import 'package:unn_mobile/core/services/interfaces/feed/blog_posts.dart';
 import 'package:unn_mobile/core/services/interfaces/feed/feed_updater_service.dart';
 import 'package:unn_mobile/core/services/interfaces/file_downloader.dart';
-import 'package:unn_mobile/core/services/interfaces/feed/getting_blog_post_comments.dart';
-import 'package:unn_mobile/core/services/interfaces/feed/getting_blog_posts.dart';
+import 'package:unn_mobile/core/services/interfaces/feed/legacy/getting_blog_post_comments.dart';
 import 'package:unn_mobile/core/services/interfaces/getting_file_data.dart';
 import 'package:unn_mobile/core/services/interfaces/getting_grade_book.dart';
 import 'package:unn_mobile/core/services/interfaces/getting_profile.dart';
 import 'package:unn_mobile/core/services/interfaces/getting_profile_of_current_user_service.dart';
-import 'package:unn_mobile/core/services/interfaces/feed/getting_rating_list.dart';
+import 'package:unn_mobile/core/services/interfaces/feed/legacy/getting_rating_list.dart';
 import 'package:unn_mobile/core/services/interfaces/getting_schedule_service.dart';
-import 'package:unn_mobile/core/services/interfaces/feed/getting_vote_key_signed.dart';
+import 'package:unn_mobile/core/services/interfaces/feed/legacy/getting_vote_key_signed.dart';
 import 'package:unn_mobile/core/services/interfaces/feed/last_feed_load_date_time_provider.dart';
 import 'package:unn_mobile/core/services/interfaces/loading_page/last_commit_sha.dart';
 import 'package:unn_mobile/core/services/interfaces/loading_page/last_commit_sha_provider.dart';
@@ -230,13 +228,6 @@ void registerDependencies() {
       get<UnnMobileApiHelper>(),
     ),
   );
-  injector.registerSingleton<GettingBlogPosts>(
-    () => GettingBlogPostsImpl(
-      get<AuthorizationService>(),
-      get<LoggerService>(),
-      get<UnnPortalApiHelper>(),
-    ),
-  );
   injector.registerSingleton<GettingBlogPostComments>(
     () => GettingBlogPostCommentsImpl(
       get<LoggerService>(),
@@ -276,7 +267,7 @@ void registerDependencies() {
   );
   injector.registerSingleton<FeedUpdaterService>(
     () => FeedUpdaterServiceImpl(
-      get<GettingBlogPosts>(),
+      get<BlogPostsService>(),
       get<LoggerService>(),
       get<OnlineStatusData>(),
       get<LastFeedLoadDateTimeProvider>(),

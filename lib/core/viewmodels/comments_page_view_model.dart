@@ -1,4 +1,4 @@
-import 'package:unn_mobile/core/services/interfaces/feed/getting_blog_post_comments.dart';
+import 'package:unn_mobile/core/services/interfaces/feed/legacy/getting_blog_post_comments.dart';
 import 'package:unn_mobile/core/viewmodels/base_view_model.dart';
 import 'package:unn_mobile/core/viewmodels/feed_comment_view_model.dart';
 import 'package:unn_mobile/core/viewmodels/feed_post_view_model.dart';

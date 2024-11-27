@@ -3,11 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:unn_mobile/core/models/employee_data.dart';
 import 'package:unn_mobile/core/models/student_data.dart';
 import 'package:unn_mobile/core/models/user_data.dart';
+import 'package:unn_mobile/core/models/user_short_info.dart';
 
-String getUserInitials(UserData? userData) {
-  final String name = userData?.fullname.name ?? '';
-  final String surname = userData?.fullname.surname ?? '';
-  final String lastname = userData?.fullname.lastname ?? '';
+String getUserInitials(UserData? userData, UserShortInfo? shortInfo) {
+  if (userData == null && shortInfo == null) {
+    return '';
+  }
+  Fullname? userDataFullName = userData?.fullname;
+  if (userDataFullName == null) {
+    final split = shortInfo?.fullname.split(' ');
+    if (split == null) {
+      return '';
+    }
+    userDataFullName = Fullname(split[0], split[1], split.last);
+  }
+
+  final String name = userDataFullName.name ?? '';
+  final String surname = userDataFullName.surname ?? '';
+  final String lastname = userDataFullName.lastname ?? '';
   String initials = '';
   if (name != '') {
     initials += name[0];

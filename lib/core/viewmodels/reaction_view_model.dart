@@ -2,8 +2,8 @@ import 'package:injector/injector.dart';
 import 'package:unn_mobile/core/misc/current_user_sync_storage.dart';
 import 'package:unn_mobile/core/models/rating_list.dart';
 import 'package:unn_mobile/core/models/user_short_info.dart';
-import 'package:unn_mobile/core/services/interfaces/feed/getting_rating_list.dart';
-import 'package:unn_mobile/core/services/interfaces/feed/getting_vote_key_signed.dart';
+import 'package:unn_mobile/core/services/interfaces/feed/legacy/getting_rating_list.dart';
+import 'package:unn_mobile/core/services/interfaces/feed/legacy/getting_vote_key_signed.dart';
 import 'package:unn_mobile/core/services/interfaces/feed/reaction_manager.dart';
 import 'package:unn_mobile/core/viewmodels/base_view_model.dart';
 import 'package:unn_mobile/core/viewmodels/factories/reaction_view_model_factory.dart';
@@ -65,9 +65,17 @@ class ReactionViewModel extends BaseViewModel {
     return _ratingList?.getNumberOfReactions(reaction) ?? 0;
   }
 
-  void init({String? voteKeySigned, int? postId, int? authorId}) {
+  void init({
+    String? voteKeySigned,
+    int? postId,
+    int? authorId,
+    RatingList? ratingList,
+  }) {
     _isLoading = true;
     notifyListeners();
+
+    _ratingList = ratingList;
+
     _loadData(voteKeySigned: voteKeySigned, postId: postId, authorId: authorId)
         .whenComplete(() {
       _isLoading = false;
@@ -110,6 +118,9 @@ class ReactionViewModel extends BaseViewModel {
     );
 
     if (_voteKeySigned == null) {
+      return;
+    }
+    if (_ratingList != null) {
       return;
     }
     _ratingList = await _gettingRatingList.getRatingList(

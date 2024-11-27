@@ -49,6 +49,7 @@ dependencies:
   go_router: ^14.2.7
   event: ^3.1.0
   webview_flutter_android: ^4.0.0
+  flutter_widget_from_html: ^0.15.3
 
 dev_dependencies:
   flutter_test:

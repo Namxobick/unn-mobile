@@ -20,6 +20,6 @@ class AttachedFileViewModelFactory extends CachedViewModelFactoryBase<
       getService<FileDownloaderService>(
         dependencyName: 'FeedFileDownloaderService',
       ),
-    )..init(key);
+    );
   }
 }

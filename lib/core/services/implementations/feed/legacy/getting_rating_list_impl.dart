@@ -3,7 +3,7 @@ import 'package:unn_mobile/core/constants/api_url_strings.dart';
 import 'package:unn_mobile/core/constants/rating_list_strings.dart';
 import 'package:unn_mobile/core/misc/api_helpers/api_helper.dart';
 import 'package:unn_mobile/core/models/rating_list.dart';
-import 'package:unn_mobile/core/services/interfaces/feed/getting_rating_list.dart';
+import 'package:unn_mobile/core/services/interfaces/feed/legacy/getting_rating_list.dart';
 import 'package:unn_mobile/core/services/interfaces/logger_service.dart';
 
 class _JsonKeys {

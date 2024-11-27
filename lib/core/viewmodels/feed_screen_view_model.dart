@@ -65,7 +65,8 @@ class FeedScreenViewModel extends BaseViewModel
               _feedStreamUpdater.feedPosts.length,
             )
             .map(
-              (p) => FeedPostViewModel.cached(p.id)..init(p),
+              (p) =>
+                  FeedPostViewModel.cached(p.data.id)..init(filledBlogData: p),
             ),
         //
       );
@@ -81,7 +82,7 @@ class FeedScreenViewModel extends BaseViewModel
             _lastLoadedPost + postsPerPage,
           )
           .map(
-            (p) => FeedPostViewModel.cached(p.id)..init(p),
+            (p) => FeedPostViewModel.cached(p.data.id)..init(filledBlogData: p),
           ),
       //
     );
@@ -105,7 +106,7 @@ class FeedScreenViewModel extends BaseViewModel
       syncFeed();
       return;
     }
-    if (_feedStreamUpdater.feedPosts.firstOrNull !=
+    if (_feedStreamUpdater.feedPosts.firstOrNull?.data !=
         posts.firstOrNull?.blogData) {
       showSyncFeedButton = true;
     }

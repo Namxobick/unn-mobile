@@ -4,7 +4,7 @@ import 'package:unn_mobile/core/constants/session_identifier_strings.dart';
 import 'package:unn_mobile/core/misc/api_helpers/api_helper.dart';
 import 'package:unn_mobile/core/models/feed/blog_post_data.dart';
 import 'package:unn_mobile/core/services/interfaces/authorisation_service.dart';
-import 'package:unn_mobile/core/services/interfaces/feed/getting_blog_posts.dart';
+import 'package:unn_mobile/core/services/interfaces/feed/legacy/getting_blog_posts.dart';
 import 'package:unn_mobile/core/services/interfaces/logger_service.dart';
 
 class _QueryParamNames {

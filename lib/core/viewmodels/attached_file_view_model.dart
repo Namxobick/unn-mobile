@@ -119,18 +119,30 @@ class AttachedFileViewModel extends BaseViewModel {
     }
   }
 
-  void init(int fileId) {
-    _fileId = fileId;
+  void init({int? fileId, FileData? fileData}) {
+    assert(fileId != null || fileData != null);
+    if (initialized) {
+      return;
+    }
+    isInitialized = true;
+
+    _fileId = fileData?.id ?? fileId!;
+
     _isLoadingData = true;
-    _loadData(fileId).then((file) {
-      _loadedData = file;
-    }).catchError((error, stack) {
-      _loggerService.logError(error, stack);
-      _hasError = true;
-    }).whenComplete(() {
-      _isLoadingData = false;
-      notifyListeners(); // Я надеюсь, это выполнится после строчек выше
-    });
+    if (fileData == null) {
+      _loadData(fileId!).then((file) {
+        _loadedData = file;
+      }).catchError((error, stack) {
+        _loggerService.logError(error, stack);
+        _hasError = true;
+      }).whenComplete(() {
+        _isLoadingData = false;
+        notifyListeners(); // Я надеюсь, это выполнится после строчек выше
+      });
+      return;
+    }
+    _loadedData = fileData;
+    notifyListeners();
   }
 
   Future<FileData?> _loadData(int fileId) async {

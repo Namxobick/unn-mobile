@@ -2,11 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:event/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bbcode/flutter_bbcode.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:unn_mobile/core/misc/app_settings.dart';
-import 'package:unn_mobile/core/misc/custom_bb_tags.dart';
 import 'package:unn_mobile/core/models/rating_list.dart';
 import 'package:unn_mobile/core/viewmodels/feed_post_view_model.dart';
 import 'package:unn_mobile/core/viewmodels/profile_view_model.dart';
@@ -157,27 +156,7 @@ class _FeedPostState extends State<FeedPost> {
                     viewModel: model.profileViewModel,
                   ),
                   const SizedBox(height: 16.0),
-                  BBCodeText(
-                    data: model.postText,
-                    stylesheet: getBBStyleSheet(),
-                    errorBuilder: (context, error, stack) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Failed to parse BBCode correctly. ',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          const Text(
-                            'This usually means on of the tags is not properly handling unexpected input.\n',
-                          ),
-                          const Text('Original text: '),
-                          Text(model.postText.replaceAll('\n', '\n#')),
-                          Text(error.toString()),
-                        ],
-                      );
-                    },
-                  ),
+                  HtmlWidget(model.postText),
                   const SizedBox(height: 16.0),
                   for (final file in model.attachedFileViewModels)
                     AttachedFile(
@@ -276,13 +255,14 @@ class _PostHeader extends StatelessWidget {
     return BaseView<ProfileViewModel>(
       model: viewModel,
       builder: (context, model, _) {
+        final showShimmer = !model.hasShortInfo && model.isLoading;
         return Row(
           children: [
             SizedBox(
               width: 45,
               height: 45,
               child: ShimmerLoading(
-                isLoading: model.isLoading,
+                isLoading: showShimmer,
                 child: CircleAvatar(
                   backgroundImage: model.hasAvatar
                       ? CachedNetworkImageProvider(model.avatarUrl!)
@@ -304,8 +284,8 @@ class _PostHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ShimmerLoading(
-                    isLoading: model.isLoading,
-                    child: model.isLoading
+                    isLoading: showShimmer,
+                    child: showShimmer
                         ? Container(
                             width: double.infinity,
                             height: MediaQuery.of(context)
@@ -355,6 +335,13 @@ class _ReactionButton extends StatelessWidget {
     return BaseView<ReactionViewModel>(
       model: viewModel,
       builder: (context, viewModel, _) {
+        if (viewModel.isLoading) {
+          return const SizedBox(
+            width: 22,
+            height: 22,
+            child: CircularProgressIndicator(),
+          );
+        }
         return GestureDetector(
           onTap: () {
             if (AppSettings.vibrationEnabled) {
